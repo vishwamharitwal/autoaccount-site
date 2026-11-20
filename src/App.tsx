@@ -184,7 +184,7 @@ export default function App() {
       {/* —— Install —— */}
       <section
         id="install"
-        className="bg-gradient-to-b from-cream to-sand px-5 py-16 md:px-8 md:py-20"
+        className="bg-cream px-5 py-16 md:px-8 md:py-20"
       >
         <div className="mx-auto max-w-5xl">
           <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-accent">
@@ -242,8 +242,8 @@ export default function App() {
         preset="sepia"
         palette={FOOTER_PALETTE}
         seed={11}
-        ridges={6}
-        mist={0.75}
+        ridges={7}
+        mist={0.55}
         drift={0.9}
         name="AutoAccount AI"
         brandHref="#download"
@@ -294,10 +294,12 @@ export default function App() {
         ]}
         copyright={`© ${new Date().getFullYear()} AutoAccount AI. All rights reserved.`}
         credit={null}
-        height="620px"
-        sceneMinHeight="240px"
+        maxWidth="1120px"
+        height="0px"
+        sceneMinHeight="420px"
         fontFamily='"Source Sans 3", system-ui, sans-serif'
         monoFamily='"JetBrains Mono", ui-monospace, monospace'
+        className="w-full"
       />
     </div>
   )

@@ -271,8 +271,9 @@ export function rdfRidgeline(cols: number, rows: number, i: number, layers: numb
   const k = layers > 1 ? i / (layers - 1) : 1
   const n = cols + margin * 2
   const out = new Float32Array(n)
-  const base = rows * (0.38 + 0.66 * Math.pow(k, 1.4))
-  const amp = rows * (0.2 + 0.24 * k)
+  // Lower base → ridges climb higher / fill more of the scene (less empty paper gap)
+  const base = rows * (0.22 + 0.72 * Math.pow(k, 1.35))
+  const amp = rows * (0.22 + 0.26 * k)
   const freq = 6 - 3.8 * k
   // Near ridges climb toward both edges, one side more than the other, so the
   // range opens into a valley. Nothing climbs into the faded band at the top.
@@ -309,16 +310,14 @@ const RDF_CSS = `
 }
 .rdf-frame {
   position: relative; display: grid; grid-template-rows: auto auto minmax(var(--rdf-scene-min), 1fr);
-  width: 100%; max-width: var(--rdf-max); margin: 0 auto;
+  width: 100%; max-width: none; margin: 0;
 }
-.rdf-frame::before, .rdf-frame::after {
-  content: ""; position: absolute; top: 0; bottom: 0; width: 1px; z-index: 3; pointer-events: none;
-  background: var(--rdf-line); transform: scaleY(0); transform-origin: 50% 0;
-  transition: transform 1.4s cubic-bezier(.2,.7,.1,1);
+/* Content stays readable width; mountains go edge-to-edge */
+.rdf-top, .rdf-bar {
+  width: 100%; max-width: var(--rdf-max); margin-left: auto; margin-right: auto;
+  box-sizing: border-box;
 }
-.rdf-frame::before { left: 0; }
-.rdf-frame::after { right: 0; transition-delay: .08s; }
-.rdf-in .rdf-frame::before, .rdf-in .rdf-frame::after { transform: scaleY(1); }
+.rdf-frame::before, .rdf-frame::after { display: none; }
 
 .rdf-r {
   opacity: 0; transform: translateY(12px); filter: blur(5px);
@@ -330,33 +329,33 @@ const RDF_CSS = `
 .rdf-top {
   position: relative; z-index: 2; display: grid;
   grid-template-columns: minmax(0, 1.9fr) repeat(var(--rdf-n), minmax(0, 1fr));
-  gap: 28px; padding: clamp(44px, 6.4vw, 80px) var(--rdf-pad) clamp(30px, 4vw, 52px);
+  gap: 32px; padding: clamp(28px, 4vw, 48px) var(--rdf-pad) clamp(18px, 2.5vw, 28px);
 }
-.rdf-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+.rdf-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
 .rdf-logo {
-  display: inline-flex; align-items: center; gap: 10px; color: var(--rdf-ink); text-decoration: none;
-  font-size: 23px; font-weight: 500; letter-spacing: -.035em; line-height: 1;
+  display: inline-flex; align-items: center; gap: 12px; color: var(--rdf-ink); text-decoration: none;
+  font-size: clamp(26px, 3vw, 34px); font-weight: 650; letter-spacing: -.035em; line-height: 1;
 }
-.rdf-mark { width: 30px; height: 21px; display: block; overflow: visible; }
+.rdf-mark { width: 38px; height: 26px; display: block; overflow: visible; }
 .rdf-mark rect { fill: var(--rdf-paper); transition: transform .7s cubic-bezier(.2,.7,.1,1); }
 .rdf-logo:hover .rdf-mist-a { transform: translateX(4px); }
 .rdf-logo:hover .rdf-mist-b { transform: translateX(-5px); }
-.rdf-tag { margin: 0; max-width: 30ch; font-size: 13.5px; line-height: 1.55; color: var(--rdf-muted); text-wrap: pretty; }
-.rdf-social { display: flex; gap: 6px; margin: 2px 0 0 -7px; padding: 0; list-style: none; }
+.rdf-tag { margin: 0; max-width: 36ch; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.55; color: var(--rdf-muted); text-wrap: pretty; }
+.rdf-social { display: flex; gap: 8px; margin: 2px 0 0 -7px; padding: 0; list-style: none; }
 .rdf-social a {
-  display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; color: var(--rdf-muted);
+  display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; color: var(--rdf-muted);
   transition: color .3s ease, background-color .3s ease, transform .45s cubic-bezier(.2,.7,.1,1);
 }
 .rdf-social a:hover { color: var(--rdf-ink); background: color-mix(in srgb, var(--rdf-deep) 8%, transparent); transform: translateY(-2px); }
-.rdf-social svg { width: 15px; height: 15px; display: block; }
+.rdf-social svg { width: 18px; height: 18px; display: block; }
 
 .rdf-col h3 {
-  margin: 4px 0 18px; font: 500 10.5px/1 var(--rdf-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--rdf-muted);
+  margin: 4px 0 16px; font: 600 12px/1 var(--rdf-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--rdf-muted);
 }
-.rdf-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.rdf-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
 .rdf-link {
   position: relative; display: inline-flex; align-items: center; gap: 8px;
-  color: var(--rdf-ink); text-decoration: none; font-size: 14px; line-height: 1.35; letter-spacing: -.005em;
+  color: var(--rdf-ink); text-decoration: none; font-size: clamp(15px, 1.4vw, 17px); line-height: 1.35; letter-spacing: -.005em; font-weight: 550;
   transition: color .3s ease, transform .5s cubic-bezier(.2,.7,.1,1);
 }
 .rdf-link::before {
@@ -366,7 +365,7 @@ const RDF_CSS = `
 .rdf-link:hover { color: var(--rdf-accent); transform: translateX(7px); }
 .rdf-link:hover::before { transform: scaleX(1); }
 .rdf-badge {
-  font: 500 9px/1 var(--rdf-mono); letter-spacing: .1em; text-transform: uppercase; padding: 4px 6px 3px; border-radius: 99px;
+  font: 600 10px/1 var(--rdf-mono); letter-spacing: .1em; text-transform: uppercase; padding: 5px 8px 4px; border-radius: 99px;
   color: var(--rdf-accent); background: color-mix(in srgb, var(--rdf-accent) 11%, transparent);
 }
 .rdf-link:focus-visible, .rdf-logo:focus-visible, .rdf-social a:focus-visible, .rdf-credit:focus-visible {
@@ -375,7 +374,7 @@ const RDF_CSS = `
 
 .rdf-bar {
   position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 16px;
-  padding: 0 var(--rdf-pad); font-size: 12px; color: var(--rdf-muted);
+  padding: 0 var(--rdf-pad) 8px; font-size: 14px; color: var(--rdf-muted);
 }
 .rdf-bar p { margin: 0; }
 .rdf-credit {
@@ -387,9 +386,12 @@ const RDF_CSS = `
 .rdf-credit:hover .rdf-heart { animation: rdf-beat 1s ease-in-out infinite; }
 @keyframes rdf-beat { 0%, 60%, 100% { transform: scale(1); } 15% { transform: scale(1.3); } 32% { transform: scale(.95); } 45% { transform: scale(1.15); } }
 
-.rdf-scene { position: relative; z-index: 1; margin-top: -64px; overflow: hidden; }
+.rdf-scene {
+  position: relative; z-index: 1; width: 100%; margin-top: -110px; overflow: hidden;
+  min-height: var(--rdf-scene-min);
+}
 .rdf-scene canvas {
-  position: absolute; left: 0; bottom: 0; display: block; max-width: none;
+  position: absolute; left: 0; bottom: 0; display: block; width: 100% !important; max-width: none;
   image-rendering: pixelated; image-rendering: crisp-edges;
 }
 .rdf-alt {
@@ -412,7 +414,7 @@ const RDF_CSS = `
   .rdf-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); row-gap: 36px; }
   .rdf-brand { grid-column: 1 / -1; }
   .rdf-bar { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .rdf-scene { margin-top: -40px; }
+  .rdf-scene { margin-top: -72px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rdf-r, .rdf-frame::before, .rdf-frame::after, .rdf-link, .rdf-link::before, .rdf-social a, .rdf-mark rect { transition: none; }
