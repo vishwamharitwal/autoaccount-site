@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-background: #fffaf3;
+  --color-foreground: #1a1512;
+  --color-muted: #6b5e54;
+  --color-muted-foreground: #6b5e54;
+  --color-accent: #f62440;
+  --color-accent-deep: #d91f38;
+  --color-line: #e8dcc8;
+  --color-sand: #fff2db;
+  --color-cream: #fffaf3;
+  --color-ink: #1a1512;
+  --color-ring: #f62440;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply m-0 min-h-svh bg-cream font-sans text-ink antialiased;
+  }
+}
